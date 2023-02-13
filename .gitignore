@@ -1,2 +1,5 @@
 ALIGNIE_venv/
 data/
+save/
+results/
+*.zip

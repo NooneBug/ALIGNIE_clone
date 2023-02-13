@@ -169,7 +169,7 @@ def train_func(epoch, N_EPOCHS, pos_data, neg_data, random_iter, batch_size, wor
     if add_new_instance:
         model.eval()
         new_instance_dict = defaultdict(dict)
-        predict_batch_size = 128
+        predict_batch_size = 8
         step_num = int((len(train_sent) - 1) / predict_batch_size) + 1
         print(f'There are {step_num} batches for instance generation.')
         current_model_save_directory = os.path.join('save', dataset_name, 'epoch_'+str(epoch))
@@ -245,7 +245,7 @@ def train_func(epoch, N_EPOCHS, pos_data, neg_data, random_iter, batch_size, wor
 
     if temporal_ensemble and epoch > 0:
         model.eval()
-        predict_batch_size = 128
+        predict_batch_size = 8
         step_num = int((len(train_sent) - 1) / predict_batch_size) + 1
         with torch.no_grad():
             for i in range(step_num):
@@ -455,10 +455,13 @@ if __name__ == "__main__":
         test_macro_f1_average = 0
         for i in range(6, 20):
             # train_file = os.path.join('data', dataset, dataset+'_train_few_shot_5_'+str(i)+'.json')
-            train_file = os.path.join('data', dataset, dataset+'_train_new_few_shot_5_'+str(i)+'.json')
+            # train_file = os.path.join('data', dataset, dataset+'_train_new_few_shot_5_'+str(i)+'.json')
+            # train_file = os.path.join('data', dataset, 'fewnerd_train.json')
+            train_file = os.path.join('data', dataset + '_sample', 'sampled_train.json')
             # train_file = os.path.join('data', dataset, 'supervised.json')
-            test_file = os.path.join('data', dataset, dataset+'_test_new_5_'+str(i)+'.json')
-            # test_file = os.path.join('data', dataset, dataset+'_test.json')
+            # test_file = os.path.join('data', dataset, dataset+'_test_new_5_'+str(i)+'.json')
+            # test_file = os.path.join('data', dataset, 'fewnerd_test.json')
+            test_file = os.path.join('data', dataset + '_sample','sampled_test.json')
             new_hier = dataset+'_hier.txt'
             old_hier = os.path.join('data', 'ontology', dataset+'_types.txt')
             # old_hier = os.path.join('data', 'ontology', dataset+'_types_old.txt')
@@ -515,7 +518,7 @@ if __name__ == "__main__":
                             keywords_list = keywords_list, add_new_instance=False, sample_num=sample_num, temporal_ensemble=False, ensem_score=ensem_score,\
                             momentum=0.5, temp_ensem_weight=1, dataset_name=dataset, unmasker_new_model=unmasker_new_model)
                         test_loss, test_acc, test_macro_f1, test_micro_f1, total_crct, total_pred = test_func(\
-                            test_data, 128, word2label=None, project=project, epoch=epoch, shuffle=random_iter_eval)   
+                            test_data, 8, word2label=None, project=project, epoch=epoch, shuffle=random_iter_eval)   
                     else:
                         train_loss, train_acc, train_macro_f1, train_micro_f1, train_pos_loss, train_neg_loss, keywords_list,\
                             ensem_score = train_func(epoch, N_EPOCHS, pos_data, None, \
@@ -524,7 +527,7 @@ if __name__ == "__main__":
                             temporal_ensemble=False, ensem_score=ensem_score, momentum=0.5, temp_ensem_weight=1, dataset_name=dataset, \
                             unmasker_new_model=unmasker_new_model)
                         test_loss, test_acc, test_macro_f1, test_micro_f1, total_crct, total_pred = test_func(\
-                            test_data, 128, word2label=None, project=project, epoch=epoch, shuffle=random_iter_eval)
+                            test_data, 8, word2label=None, project=project, epoch=epoch, shuffle=random_iter_eval)
 
                     print(f'Loss: {train_loss:.4f}(train)\t|\tAcc: {train_acc*100:.2f}\t|\tMicro-F1: {train_micro_f1 * 100:.2f}\t|\tMacro-F1: {train_macro_f1 * 100:.2f}')
                     print(f'Loss: {test_loss:.4f}(test)\t|\tAcc: {test_acc*100:.2f}\t|\tMicro-F1: {test_micro_f1 * 100:.2f}\t|\tMacro-F1: {test_macro_f1 * 100:.2f}')
@@ -541,7 +544,7 @@ if __name__ == "__main__":
                 train_macro_f1_average += train_macro_f1
 
                 test_loss, test_acc, test_macro_f1, test_micro_f1, total_crct, total_pred = test_func(\
-                    test_data, 128, word2label=None, project=project, epoch=None, shuffle=None)
+                    test_data, 8, word2label=None, project=project, epoch=None, shuffle=None)
                 print(f'Final Test Loss: {test_loss:.4f}(test)\t|\tAcc: {test_acc*100:.2f}\t|\tMicro-F1: {test_micro_f1 * 100:.2f}\t|\tMacro-F1: {test_macro_f1 * 100:.2f}')
 
                 test_acc_average += test_acc
